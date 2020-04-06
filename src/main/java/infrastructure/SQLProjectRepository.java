@@ -8,7 +8,6 @@ import java.util.UUID;
 public class SQLProjectRepository implements ProjectRepository {
 
   public SQLProjectRepository(Connection connection) {
-    throw new UnsupportedOperationException("Implement me!");
   }
 
   @Override

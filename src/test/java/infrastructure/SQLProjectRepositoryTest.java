@@ -35,7 +35,7 @@ class SQLProjectRepositoryTest {
 
     sqlProjectRepository.save(project);
 
-    String sql = "SELECT COUNT(*) from projects where projects.id = ?";
+    String sql = "SELECT * from Project prooject where prooject.id = ?";
     PreparedStatement query = connection.prepareStatement(sql);
     query.setString(1, projectId.toString());
     ResultSet resultSet = query.executeQuery();
