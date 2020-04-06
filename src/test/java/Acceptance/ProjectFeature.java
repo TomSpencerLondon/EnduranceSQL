@@ -9,6 +9,9 @@ import entity.ComplexityEnum;
 import entity.Project;
 import entity.Task;
 import infrastructure.SQLProjectRepository;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.UUID;
@@ -21,8 +24,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class ProjectFeature {
 
   @Test
-  public void create_project_with_tasks() {
-    ProjectRepository projectRepository = new SQLProjectRepository();
+  public void create_project_with_tasks() throws SQLException {
+    String url1 = "jdbc:mysql://localhost:3306/endurance";
+    String user = "root";
+    String password = "Buster";
+    Connection connection = DriverManager.getConnection(url1, user, password);
+
+    ProjectRepository projectRepository = new SQLProjectRepository(connection);
     ProjectService projectService = new ProjectService(projectRepository);
     UUID taskId = UUID.randomUUID();
     UUID projectId = UUID.randomUUID();
@@ -36,6 +44,8 @@ public class ProjectFeature {
 
     assertEquals(project, retrievedProject);
   }
+
+
 
 
 }

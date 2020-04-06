@@ -2,17 +2,22 @@ package infrastructure;
 
 import domain.ProjectRepository;
 import entity.Project;
+import java.sql.Connection;
 import java.util.UUID;
 
 public class SQLProjectRepository implements ProjectRepository {
 
+  public SQLProjectRepository(Connection connection) {
+    throw new UnsupportedOperationException("Implement me!");
+  }
+
   @Override
   public void save(Project project) {
-    throw new UnsupportedOperationException();
   }
 
   @Override
   public Project findById(UUID projectId) {
     throw new UnsupportedOperationException();
   }
+
 }
