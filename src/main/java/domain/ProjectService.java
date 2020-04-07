@@ -15,7 +15,7 @@ public class ProjectService {
     projectRepository.save(project);
   }
 
-  public Project retrieveById(UUID projectId) {
+  public Project retrieveById(int projectId) {
     throw new UnsupportedOperationException("Implement me!");
   }
 }

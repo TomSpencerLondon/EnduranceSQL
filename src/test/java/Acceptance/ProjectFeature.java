@@ -1,30 +1,29 @@
 package Acceptance;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.BDDMockito.given;
-
 import domain.ProjectRepository;
 import domain.ProjectService;
 import entity.ComplexityEnum;
 import entity.Project;
 import entity.Task;
+import exceptions.NoTasksException;
 import infrastructure.SQLProjectRepository;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Collections;
-import java.util.UUID;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(MockitoExtension.class)
 public class ProjectFeature {
 
   @Test
-  public void create_project_with_tasks() throws SQLException {
+  public void create_project_with_tasks() throws SQLException, NoTasksException {
     String url1 = "jdbc:mysql://localhost:3306/endurance";
     String user = "root";
     String password = "Buster";
@@ -32,8 +31,8 @@ public class ProjectFeature {
 
     ProjectRepository projectRepository = new SQLProjectRepository(connection);
     ProjectService projectService = new ProjectService(projectRepository);
-    UUID taskId = UUID.randomUUID();
-    UUID projectId = UUID.randomUUID();
+    int taskId = 1;
+    int projectId = 1;
 
     Task task = new Task(taskId, "task 1", "This is a description 1", LocalDate.of(2020, 1, 1), ComplexityEnum.MINIMUM);
     Project project = new Project(projectId, "project 1", "project description 1", LocalDate.of(2020, 1, 1),
