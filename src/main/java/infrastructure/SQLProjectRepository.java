@@ -1,13 +1,14 @@
 package infrastructure;
 
 import domain.ProjectRepository;
+import entity.ComplexityEnum;
 import entity.Project;
 import entity.Task;
+import exceptions.NoTasksException;
 
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.security.InvalidKeyException;
+import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -23,25 +24,6 @@ public class SQLProjectRepository implements ProjectRepository {
 
   @Override
   public void save(Project project) {
-    // Task
-//    id
-//            name
-//    description
-//            deadline
-//    project_id
-//            complexity_id
-//    country_id
-
-    // Project
-//    id
-//            name
-//    description
-//            deadline
-
-    // 1. Save the project
-    // 2. Retreive the complexity that we need
-    // 3. Save task passing id of project - pass complexity id
-
     String projectSql = "INSERT INTO Project (id, name, description, deadline)\n" +
             "VALUES (?, ?, ?, ?);";
 
@@ -93,8 +75,37 @@ public class SQLProjectRepository implements ProjectRepository {
   }
 
   @Override
-  public Project findById(UUID projectId) {
-    throw new UnsupportedOperationException();
-  }
+  public Project findById(int projectId) throws SQLException, InvalidKeyException {
+    String findProjectSql = "SELECT * FROM Project WHERE id = ?";
+    PreparedStatement projectQuery = connection.prepareStatement(findProjectSql);
+    projectQuery.setInt(1, projectId);
+    ResultSet projectResult = projectQuery.executeQuery();
+    projectResult.next();
 
+    String findTaskSql = "SELECT * FROM Task where project_id = ?";
+    PreparedStatement taskQuery = connection.prepareStatement(findTaskSql);
+    taskQuery.setInt(1, projectResult.getInt("id"));
+    ResultSet taskResult = taskQuery.executeQuery();
+
+    List<Task> listOfTasks = new ArrayList<>();
+    while(taskResult.next()){
+      listOfTasks.add(new Task(taskResult.getInt("id"),
+              taskResult.getString("name"),
+              taskResult.getString("description"),
+              taskResult.getDate("deadline").toLocalDate(),
+              ComplexityEnum.getByLevel(taskResult.getInt("complexity_id"))));
+    }
+
+    try {
+      Project project = new Project(projectResult.getInt("id"),
+              projectResult.getString("name"),
+              projectResult.getString("description"),
+              projectResult.getDate("deadline").toLocalDate(),
+              listOfTasks);
+      return project;
+    } catch (NoTasksException e) {
+      e.printStackTrace();
+    }
+    throw new InvalidKeyException();
+  }
 }

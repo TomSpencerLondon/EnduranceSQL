@@ -10,4 +10,13 @@ public enum ComplexityEnum {
   ComplexityEnum(int level) {
     this.level = level;
   }
+
+  public static ComplexityEnum getByLevel(int number) {
+    for (ComplexityEnum c : ComplexityEnum.values()){
+      if (c.level == number){
+        return c;
+      }
+    }
+    throw new IllegalArgumentException();
+  }
 }

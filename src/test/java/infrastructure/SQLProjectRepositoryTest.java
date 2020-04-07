@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import entity.ComplexityEnum;
 import entity.Project;
 import entity.Task;
+
+import java.security.InvalidKeyException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -32,7 +34,7 @@ class SQLProjectRepositoryTest {
   }
 
   @Test
-  public void store_project_to_sql_without_any_errors() throws SQLException, NoTasksException {
+  public void store_project_to_sql_without_any_errors() throws SQLException, NoTasksException, InvalidKeyException {
 
     SQLProjectRepository sqlProjectRepository = new SQLProjectRepository(connection);
     int taskId = 1;
@@ -49,8 +51,9 @@ class SQLProjectRepositoryTest {
     query.setInt(1, projectId);
     ResultSet resultSet = query.executeQuery();
     assertTrue(resultSet.first());
-
+    Project projectFound = sqlProjectRepository.findById(project.id);
   }
+
 
   @AfterEach
   void tearDown() throws SQLException {
